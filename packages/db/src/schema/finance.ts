@@ -46,6 +46,7 @@ export const payments = pgTable(
     receiptNo: text("receipt_no").notNull(),
     receivedBy: uuid("received_by").references(() => users.id),
     receivedAt: timestamp("received_at", { withTimezone: true }).notNull().defaultNow(),
+    receiptEmailedAt: timestamp("receipt_emailed_at", { withTimezone: true }),
   },
   (t) => [index("payments_tenant_idx").on(t.tenantId)],
 );

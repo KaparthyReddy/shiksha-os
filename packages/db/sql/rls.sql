@@ -20,3 +20,5 @@ END $$;
 
 -- Audit log is append-only for the application role.
 REVOKE UPDATE, DELETE, TRUNCATE ON audit_log FROM shiksha_app;
+
+REVOKE UPDATE, DELETE, TRUNCATE ON audit_anchors FROM shiksha_app;

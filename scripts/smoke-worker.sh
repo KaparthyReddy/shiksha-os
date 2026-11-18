@@ -59,8 +59,12 @@ EXAM=$(req POST /exams "$TEACHER" "{\"title\":\"Sweep Exam $S\",\"batchId\":\"$B
 req POST "/exams/$EXAM/publish" "$TEACHER" >/dev/null
 SESSION=$(req POST "/exams/$EXAM/start" "$STUDENT" | json 'd.session.id')
 NOW=$(node -pe 'Date.now()')
-check "student answers before the deadline" "$(req POST "/exam-sessions/$SESSION/answers" "$STUDENT" "{\"answers\":[{\"questionId\":\"$Q\",\"response\":\"a\",\"markedForReview\":false,\"clientSeq\":1,\"clientTs\":$NOW}]}" | json 'd.accepted')" 1
+SYNC_RAW=$(req POST "/exam-sessions/$SESSION/answers" "$STUDENT" "{\"answers\":[{\"questionId\":\"$Q\",\"response\":\"a\",\"markedForReview\":false,\"clientSeq\":1,\"clientTs\":$NOW}]}")
+echo "  debug: sync raw -> $SYNC_RAW"
+check "student answers before the deadline" "$(echo "$SYNC_RAW" | json 'd.accepted')" 1
+echo "  debug: answers in DB right after sync: $(sql "select count(*) from exam_answers where session_id='$SESSION'")"
 
+echo "  debug: answers in DB before deadline shift: $(sql "select count(*) from exam_answers where session_id='$SESSION'")"
 # Simulate the student walking away: push the deadline far past the 5-minute resume window.
 sql "update exam_sessions set started_at = now() - interval '40 minutes', deadline_at = now() - interval '10 minutes' where id='$SESSION'" >/dev/null
 check "worker expires the abandoned session within 100s" "$(wait_for 100 "[ \"\$(sql \"select status from exam_sessions where id='$SESSION'\")\" = expired ] && echo true")" true
