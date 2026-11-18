@@ -7,6 +7,10 @@ import { env } from "./env";
 import { AppError } from "./core/errors";
 import { authRoutes } from "./modules/auth/routes";
 import { auditRoutes } from "./modules/audit/routes";
+import { tenantRoutes } from "./modules/tenants/routes";
+import { academicsRoutes } from "./modules/academics/routes";
+import { studentRoutes } from "./modules/students/routes";
+import { facultyRoutes } from "./modules/faculty/routes";
 
 export async function buildApp() {
   const app = Fastify({
@@ -53,6 +57,10 @@ export async function buildApp() {
 
   await app.register(authRoutes);
   await app.register(auditRoutes);
+  await app.register(tenantRoutes);
+  await app.register(academicsRoutes);
+  await app.register(studentRoutes);
+  await app.register(facultyRoutes);
 
   return app;
 }
