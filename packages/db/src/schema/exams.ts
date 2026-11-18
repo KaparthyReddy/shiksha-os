@@ -101,6 +101,7 @@ export const examAnswers = pgTable(
       .references(() => questions.id),
     response: jsonb("response").$type<string | number | string[] | null>(),
     markedForReview: boolean("marked_for_review").notNull().default(false),
+    late: boolean("late").notNull().default(false),
     clientSeq: integer("client_seq").notNull(),
     clientTs: bigint("client_ts", { mode: "number" }).notNull(),
     serverReceivedAt: timestamp("server_received_at", { withTimezone: true })

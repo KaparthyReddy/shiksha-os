@@ -3,3 +3,4 @@ export * from "./schemas/auth";
 export * from "./schemas/people";
 export * from "./schemas/exam";
 export * from "./schemas/manage";
+export * from "./schemas/ops";

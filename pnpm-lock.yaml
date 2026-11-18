@@ -32,6 +32,9 @@ importers:
       '@shiksha/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@shiksha/exam-engine':
+        specifier: workspace:^
+        version: link:../../packages/exam-engine
       '@shiksha/shared':
         specifier: workspace:*
         version: link:../../packages/shared

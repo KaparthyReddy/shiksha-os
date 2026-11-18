@@ -88,10 +88,17 @@ check "summary has a percentage for each student" "$(req GET "/attendance/summar
 echo "--- fees ---"
 PLAN=$(req POST /fee-plans "$ADMIN" "{\"name\":\"Smoke Plan $S\",\"amountPaise\":1000000}" | json 'd.id')
 ENROLLED=$(req GET "/batches/$BATCH" "$ADMIN" | json 'd.enrolled')
-check "bulk invoicing covers every enrolled student" "$(req POST /invoices/bulk "$ADMIN" "{\"batchId\":\"$BATCH\",\"feePlanId\":\"$PLAN\"}" | json 'd.created')" "$ENROLLED"
-check "bulk invoicing twice creates nothing new" "$(req POST /invoices/bulk "$ADMIN" "{\"batchId\":\"$BATCH\",\"feePlanId\":\"$PLAN\"}" | json 'd.created')" 0
+echo "  debug: BATCH=$BATCH PLAN=$PLAN ENROLLED=$ENROLLED"
+B1=$(req POST /invoices/bulk "$ADMIN" "{\"batchId\":\"$BATCH\",\"feePlanId\":\"$PLAN\"}")
+echo "  debug: bulk #1 -> $B1"
+check "batch has enrolled students" "$([ "${ENROLLED:-0}" -gt 0 ] 2>/dev/null && echo yes)" yes
+check "bulk invoicing covers every enrolled student" "$(echo "$B1" | json 'd.created')" "$ENROLLED"
+B2=$(req POST /invoices/bulk "$ADMIN" "{\"batchId\":\"$BATCH\",\"feePlanId\":\"$PLAN\"}")
+echo "  debug: bulk #2 -> $B2"
+check "bulk invoicing twice creates nothing new" "$(echo "$B2" | json 'd.created')" 0
 
-INV=$(req GET "/invoices?studentId=$SA" "$ADMIN" | json "d.items.find(i=>i.feePlanId==='$PLAN').id")
+INV=$(req GET "/invoices?studentId=$SA" "$ADMIN" | json "(d.items.find(i=>i.feePlanId==='$PLAN')||{}).id")
+check "the new plan's invoice exists for a student" "$([ "$INV" != undefined ] && echo yes)" yes
 pay() { req POST "/invoices/$INV/payments" "$ADMIN" "{\"amountPaise\":$1,\"method\":\"cash\"}"; }
 P1=$(pay 400000)
 check "partial payment marks the invoice partial" "$(echo "$P1" | json 'd.status')" partial

@@ -1,0 +1,1 @@
+ALTER TABLE "exam_answers" ADD COLUMN "late" boolean DEFAULT false NOT NULL;

@@ -11,6 +11,11 @@ import { tenantRoutes } from "./modules/tenants/routes";
 import { academicsRoutes } from "./modules/academics/routes";
 import { studentRoutes } from "./modules/students/routes";
 import { facultyRoutes } from "./modules/faculty/routes";
+import { questionBankRoutes } from "./modules/question-bank/routes";
+import { examRoutes } from "./modules/exams/routes";
+import { sessionRoutes } from "./modules/exams/sessions";
+import { attendanceRoutes } from "./modules/attendance/routes";
+import { feeRoutes } from "./modules/fees/routes";
 
 export async function buildApp() {
   const app = Fastify({
@@ -61,6 +66,11 @@ export async function buildApp() {
   await app.register(academicsRoutes);
   await app.register(studentRoutes);
   await app.register(facultyRoutes);
+  await app.register(questionBankRoutes);
+  await app.register(examRoutes);
+  await app.register(sessionRoutes);
+  await app.register(attendanceRoutes);
+  await app.register(feeRoutes);
 
   return app;
 }
