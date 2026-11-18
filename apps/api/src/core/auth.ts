@@ -12,19 +12,20 @@ export interface AuthContext {
 
 const enc = (s: string) => new TextEncoder().encode(s);
 
-async function sign(ctx: AuthContext, typ: "access" | "refresh", secret: string, ttl: string) {
-  return new SignJWT({ tid: ctx.tenantId, role: ctx.role, typ })
+/** Access tokens are short-lived JWTs. Refresh tokens are opaque and stored in the database (see modules/auth). */
+export async function issueAccessToken(ctx: AuthContext): Promise<string> {
+  return new SignJWT({ tid: ctx.tenantId, role: ctx.role, typ: "access" })
     .setProtectedHeader({ alg: "HS256" })
     .setSubject(ctx.userId)
     .setIssuedAt()
-    .setExpirationTime(ttl)
-    .sign(enc(secret));
+    .setExpirationTime("15m")
+    .sign(enc(env.JWT_ACCESS_SECRET));
 }
 
-async function verifyToken(token: string, typ: "access" | "refresh", secret: string): Promise<AuthContext> {
-  const { payload } = await jwtVerify(token, enc(secret), { algorithms: ["HS256"] });
+async function verifyAccess(token: string): Promise<AuthContext> {
+  const { payload } = await jwtVerify(token, enc(env.JWT_ACCESS_SECRET), { algorithms: ["HS256"] });
   if (
-    payload.typ !== typ ||
+    payload.typ !== "access" ||
     typeof payload.sub !== "string" ||
     typeof payload.tid !== "string" ||
     !ROLES.includes(payload.role as Role)
@@ -34,22 +35,12 @@ async function verifyToken(token: string, typ: "access" | "refresh", secret: str
   return { userId: payload.sub, tenantId: payload.tid, role: payload.role as Role };
 }
 
-export async function issueTokens(ctx: AuthContext) {
-  const [accessToken, refreshToken] = await Promise.all([
-    sign(ctx, "access", env.JWT_ACCESS_SECRET, "15m"),
-    sign(ctx, "refresh", env.JWT_REFRESH_SECRET, "7d"),
-  ]);
-  return { accessToken, refreshToken };
-}
-
-export const verifyRefresh = (token: string) => verifyToken(token, "refresh", env.JWT_REFRESH_SECRET);
-
 /** Fastify preHandler: requires a valid access token and sets req.auth. */
 export async function authenticate(req: FastifyRequest): Promise<void> {
   const header = req.headers.authorization;
   if (!header?.startsWith("Bearer ")) throw unauthorized();
   try {
-    req.auth = await verifyToken(header.slice(7), "access", env.JWT_ACCESS_SECRET);
+    req.auth = await verifyAccess(header.slice(7));
   } catch {
     throw unauthorized("Invalid or expired token");
   }
