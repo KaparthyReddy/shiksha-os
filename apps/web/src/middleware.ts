@@ -14,6 +14,7 @@ export async function middleware(req: NextRequest) {
   let claims = decodeClaims(access);
   let rotated = false;
   let rejected = false;
+  let apiDown = false;
 
   // Refresh when the access token is missing or about to expire.
   if ((!claims || claims.exp - nowSec < 30) && refresh) {
@@ -33,10 +34,11 @@ export async function middleware(req: NextRequest) {
       } else if (r.status === 401) {
         rejected = true;
         claims = null;
+      } else {
+        apiDown = true;
       }
-      // Any other failure (API down): keep what we have rather than logging the user out.
     } catch {
-      /* API unreachable: same as above */
+      apiDown = true;
     }
   }
 
@@ -60,15 +62,26 @@ export async function middleware(req: NextRequest) {
     return apply(NextResponse.next());
   }
 
-  if (!loggedIn) return redirect("/login");
+  if (!loggedIn) {
+    if (pathname.startsWith("/api/")) {
+      // Fetch callers get JSON, not an HTML redirect. 503 means "try again", 401 means "sign in".
+      return apply(
+        apiDown
+          ? NextResponse.json({ error: { code: "api_unreachable", message: "Can't reach the server" } }, { status: 503 })
+          : NextResponse.json({ error: { code: "unauthorized", message: "Sign in required" } }, { status: 401 }),
+      );
+    }
+    return redirect("/login");
+  }
 
   const role = claims!.role;
   if (pathname === "/") return redirect(HOME[role]);
   if (pathname.startsWith("/admin") && role !== "admin") return redirect(HOME[role]);
   if (pathname.startsWith("/teacher") && role === "student") return redirect(HOME[role]);
   if (pathname.startsWith("/student") && role !== "student") return redirect(HOME[role]);
+  if ((pathname === "/exam" || pathname.startsWith("/exam/")) && role !== "student") return redirect(HOME[role]);
 
-  // Server components read cookies from the incoming request, so hand them the refreshed ones.
+  // Server components and route handlers read cookies from the incoming request, so hand them the refreshed ones.
   const headers = new Headers(req.headers);
   if (rotated && access && refresh) {
     const jar = new Map(req.cookies.getAll().map((c) => [c.name, c.value]));

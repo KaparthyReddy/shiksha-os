@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  transpilePackages: ["@shiksha/shared"],
+  transpilePackages: ["@shiksha/shared", "@shiksha/exam-engine"],
 };
 
 export default nextConfig;

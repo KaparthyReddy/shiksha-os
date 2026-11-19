@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { api } from "@/lib/api";
 import { inr } from "@/lib/format";
 import type { MyExam, MyInvoice } from "@/lib/types";
@@ -32,6 +33,14 @@ export default async function StudentHome() {
                 <span className={`rounded-full px-2 py-0.5 text-xs ${badge[e.state] ?? badge.upcoming}`}>
                   {e.state.replace("_", " ")}
                 </span>
+                {(e.state === "open" || e.state === "in_progress") && (
+                  <Link
+                    href={`/exam/${e.id}`}
+                    className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700"
+                  >
+                    {e.state === "open" ? "Start" : "Resume"}
+                  </Link>
+                )}
               </div>
             </div>
           ))}

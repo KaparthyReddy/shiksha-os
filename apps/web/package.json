@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@shiksha/exam-engine": "workspace:^",
     "@shiksha/shared": "workspace:*",
     "next": "^15.1.0",
     "react": "^19.0.0",

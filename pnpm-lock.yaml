@@ -72,6 +72,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@shiksha/exam-engine':
+        specifier: workspace:^
+        version: link:../../packages/exam-engine
       '@shiksha/shared':
         specifier: workspace:*
         version: link:../../packages/shared
