@@ -63,6 +63,9 @@ async function main() {
       })
       .returning();
 
+    const [teacherFaculty] = await tx.select({ id: s.faculty.id }).from(s.faculty).where(eq(s.faculty.userId, teacherUser!.id));
+    await tx.insert(s.batchTeachers).values({ tenantId, batchId: batch!.id, facultyId: teacherFaculty!.id });
+
     for (let i = 1; i <= 5; i++) {
       const [u] = await tx
         .insert(s.users)

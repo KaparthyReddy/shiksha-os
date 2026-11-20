@@ -11,6 +11,7 @@ import { writeAudit } from "../../core/audit";
 import { notFound, badRequest } from "../../core/errors";
 import { idParams, pageQuery, conflict, likeTerm } from "../../core/http";
 import { expireOverdue } from "./service";
+import { requireBatchAccess } from "../../core/batch-access";
 
 const staff = requireRole("admin", "teacher");
 const listQuery = pageQuery.extend({ status: z.enum(EXAM_STATUS).optional() });
@@ -20,10 +21,7 @@ export async function examRoutes(app: FastifyInstance) {
     const body = createExamSchema.parse(req.body);
     const { tenantId, userId } = req.auth!;
     const exam = await inTenant(req, async (tx) => {
-      if (body.batchId) {
-        const [b] = await tx.select({ id: batches.id }).from(batches).where(eq(batches.id, body.batchId)).limit(1);
-        if (!b) throw notFound("Batch not found");
-      }
+      if (body.batchId) await requireBatchAccess(tx, req.auth!, body.batchId);
       // FK checks bypass RLS, so confirm every question belongs to this tenant.
       const found = await tx.select({ id: questions.id }).from(questions).where(inArray(questions.id, body.questionIds));
       if (found.length !== body.questionIds.length) throw badRequest("One or more questions were not found");

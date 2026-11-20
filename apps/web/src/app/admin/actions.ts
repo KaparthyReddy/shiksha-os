@@ -152,3 +152,25 @@ export async function setFacultyActiveAction(_: FormState, fd: FormData): Promis
   revalidatePath("/admin/faculty");
   return done("Updated.");
 }
+
+// ======================= Teachers on batches =======================
+export async function assignTeacherAction(_: FormState, fd: FormData): Promise<FormState> {
+  const batchId = uuid(fd, "batchId");
+  const facultyId = uuid(fd, "facultyId");
+  if (!batchId) return missing("Batch");
+  if (!facultyId) return problem("Choose a teacher first.");
+  const r = await apiSend("POST", `/batches/${batchId}/teachers`, { facultyId });
+  if (!r.ok) return fail(r);
+  revalidatePath(`/admin/batches/${batchId}`);
+  return done("Teacher assigned.");
+}
+
+export async function unassignTeacherAction(_: FormState, fd: FormData): Promise<FormState> {
+  const batchId = uuid(fd, "batchId");
+  const facultyId = uuid(fd, "facultyId");
+  if (!batchId || !facultyId) return missing("Batch or teacher");
+  const r = await apiSend("DELETE", `/batches/${batchId}/teachers/${facultyId}`);
+  if (!r.ok) return fail(r);
+  revalidatePath(`/admin/batches/${batchId}`);
+  return done("Removed.");
+}

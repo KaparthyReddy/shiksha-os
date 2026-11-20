@@ -216,3 +216,10 @@ export interface ExamResults {
     rank: number | null;
   }[];
 }
+
+export interface BatchTeacher {
+  facultyId: string;
+  name: string;
+  email: string;
+  designation: string | null;
+}

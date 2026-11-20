@@ -14,6 +14,7 @@ import { writeAudit } from "../../core/audit";
 import { notFound, badRequest } from "../../core/errors";
 import { idParams, conflict, rethrowUnique } from "../../core/http";
 import { enrollStudent } from "./enroll";
+import { requireBatchAccess, teacherBatchScope } from "../../core/batch-access";
 
 const staff = requireRole("admin", "teacher");
 const admin = requireRole("admin");
@@ -109,7 +110,7 @@ export async function academicsRoutes(app: FastifyInstance) {
         .from(batches)
         .innerJoin(courses, eq(courses.id, batches.courseId))
         .leftJoin(enrollments, eq(enrollments.batchId, batches.id))
-        .where(courseId ? eq(batches.courseId, courseId) : undefined)
+        .where(and(courseId ? eq(batches.courseId, courseId) : undefined, teacherBatchScope(tx, req.auth!)))
         .groupBy(batches.id, courses.id)
         .orderBy(asc(batches.name)),
     );
@@ -118,6 +119,7 @@ export async function academicsRoutes(app: FastifyInstance) {
   app.get("/batches/:id", { preHandler: staff }, async (req) => {
     const { id } = idParams.parse(req.params);
     return inTenant(req, async (tx) => {
+      await requireBatchAccess(tx, req.auth!, id);
       const [b] = await tx
         .select({
           id: batches.id,

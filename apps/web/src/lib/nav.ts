@@ -5,6 +5,7 @@ export const ADMIN_NAV: NavItem[] = [
   { label: "Students", href: "/admin/students" },
   { label: "Faculty", href: "/admin/faculty" },
   { label: "Batches", href: "/admin/batches" },
+  { label: "Import", href: "/admin/import" },
   { label: "Questions", href: "/staff/questions" },
   { label: "Exams", href: "/staff/exams" },
   { label: "Fees", href: "/admin/fees" },

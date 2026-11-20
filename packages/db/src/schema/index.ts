@@ -6,3 +6,5 @@ export * from "./audit";
 export * from "./ops";
 
 export * from "./sessions";
+
+export * from "./assignments";

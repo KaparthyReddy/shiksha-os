@@ -7,6 +7,8 @@ import { inTenant } from "../../core/tenancy";
 import { writeAudit } from "../../core/audit";
 import { notFound, badRequest } from "../../core/errors";
 import { studentIdOf } from "../../core/people";
+import { requireBatchAccess } from "../../core/batch-access";
+import type { AuthContext } from "../../core/auth";
 
 const staff = requireRole("admin", "teacher");
 const student = requireRole("student");
@@ -18,9 +20,8 @@ function percentage(present: number, late: number, absent: number): number | nul
   return denom === 0 ? null : Math.round(((present + late) / denom) * 1000) / 10;
 }
 
-async function requireBatch(tx: Tx, batchId: string) {
-  const [b] = await tx.select({ id: batches.id }).from(batches).where(eq(batches.id, batchId)).limit(1);
-  if (!b) throw notFound("Batch not found");
+async function requireBatch(tx: Tx, auth: AuthContext, batchId: string) {
+  await requireBatchAccess(tx, auth, batchId);
 }
 
 export async function attendanceRoutes(app: FastifyInstance) {
@@ -33,7 +34,7 @@ export async function attendanceRoutes(app: FastifyInstance) {
     if (body.date > latest) throw badRequest("Date is in the future");
 
     return inTenant(req, async (tx) => {
-      await requireBatch(tx, body.batchId);
+      await requireBatch(tx, req.auth!, body.batchId);
 
       const ids = body.records.map((r) => r.studentId);
       const enrolled = await tx
@@ -78,7 +79,7 @@ export async function attendanceRoutes(app: FastifyInstance) {
   app.get("/attendance", { preHandler: staff }, async (req) => {
     const { batchId, date } = z.object({ batchId: z.string().uuid(), date: dateStr }).parse(req.query);
     return inTenant(req, async (tx) => {
-      await requireBatch(tx, batchId);
+      await requireBatch(tx, req.auth!, batchId);
       return tx
         .select({
           studentId: students.id,
@@ -107,7 +108,7 @@ export async function attendanceRoutes(app: FastifyInstance) {
       .object({ batchId: z.string().uuid(), from: dateStr.optional(), to: dateStr.optional() })
       .parse(req.query);
     return inTenant(req, async (tx) => {
-      await requireBatch(tx, q.batchId);
+      await requireBatch(tx, req.auth!, q.batchId);
       const rows = await tx
         .select({
           studentId: students.id,
