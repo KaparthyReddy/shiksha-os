@@ -99,3 +99,67 @@ export interface BatchDetail {
   enrolled: number;
   students: { studentId: string; name: string; rollNo: string; enrolledAt: string }[];
 }
+
+export interface FeePlan {
+  id: string;
+  name: string;
+  amountPaise: number;
+  description: string | null;
+}
+export interface InvoiceListRow {
+  id: string;
+  studentId: string;
+  studentName: string;
+  rollNo: string;
+  feePlanId: string | null;
+  amountPaise: number;
+  paidPaise: number;
+  outstandingPaise: number;
+  dueOn: string | null;
+  status: string;
+  overdue: boolean;
+}
+export interface InvoiceDetail {
+  id: string;
+  studentId: string;
+  studentName: string;
+  rollNo: string;
+  amountPaise: number;
+  dueOn: string | null;
+  status: string;
+  paidPaise: number;
+  outstandingPaise: number;
+  payments: {
+    id: string;
+    amountPaise: number;
+    method: string;
+    reference: string | null;
+    receiptNo: string;
+    receivedAt: string;
+  }[];
+}
+export interface MyInvoiceFull extends MyInvoice {
+  payments: { receiptNo: string; amountPaise: number; method: string; receivedAt: string }[];
+}
+export type AttendanceStatus = "present" | "absent" | "late" | "excused";
+export interface AttendanceRosterRow {
+  studentId: string;
+  name: string;
+  rollNo: string;
+  status: AttendanceStatus | null;
+}
+export interface AttendanceSummaryRow {
+  studentId: string;
+  name: string;
+  rollNo: string;
+  present: number;
+  late: number;
+  absent: number;
+  excused: number;
+  percentage: number | null;
+  belowThreshold: boolean;
+}
+export interface MyAttendance {
+  summary: { present: number; late: number; absent: number; excused: number; percentage: number | null };
+  recent: { date: string; status: AttendanceStatus; batchName: string }[];
+}

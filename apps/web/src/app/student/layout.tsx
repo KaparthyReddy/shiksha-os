@@ -7,9 +7,8 @@ export default function StudentLayout({ children }: { children: ReactNode }) {
       title="Student"
       nav={[
         { label: "Home", href: "/student" },
-        { label: "Exam runner" },
-        { label: "Attendance" },
-        { label: "Fees" },
+        { label: "Attendance", href: "/student/attendance" },
+        { label: "Fees", href: "/student/fees" },
       ]}
     >
       {children}

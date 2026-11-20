@@ -7,8 +7,8 @@ export default function TeacherLayout({ children }: { children: ReactNode }) {
       title="Teacher"
       nav={[
         { label: "My exams", href: "/teacher" },
+        { label: "Attendance", href: "/teacher/attendance" },
         { label: "Question bank" },
-        { label: "Attendance" },
         { label: "Live classes" },
       ]}
     >

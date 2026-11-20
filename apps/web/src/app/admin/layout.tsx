@@ -11,8 +11,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         { label: "Faculty", href: "/admin/faculty" },
         { label: "Batches", href: "/admin/batches" },
         { label: "Exams" },
-        { label: "Fees" },
-        { label: "Attendance" },
+        { label: "Fees", href: "/admin/fees" },
+        { label: "Attendance", href: "/admin/attendance" },
       ]}
     >
       {children}
