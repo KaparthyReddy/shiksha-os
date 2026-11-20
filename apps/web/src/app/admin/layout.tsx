@@ -7,9 +7,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       title="Admin"
       nav={[
         { label: "Dashboard", href: "/admin" },
-        { label: "Students" },
-        { label: "Faculty" },
-        { label: "Batches" },
+        { label: "Students", href: "/admin/students" },
+        { label: "Faculty", href: "/admin/faculty" },
+        { label: "Batches", href: "/admin/batches" },
         { label: "Exams" },
         { label: "Fees" },
         { label: "Attendance" },

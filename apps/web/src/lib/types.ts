@@ -52,3 +52,50 @@ export interface MyInvoice {
   dueOn: string | null;
   status: string;
 }
+
+export interface StudentRow {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  rollNo: string;
+  guardianName: string | null;
+  guardianPhone: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+export interface StudentDetail extends StudentRow {
+  batches: { batchId: string; batchName: string; courseName: string }[];
+}
+export interface FacultyRow {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  designation: string | null;
+  subjects: string[] | null;
+  isActive: boolean;
+  createdAt: string;
+}
+export interface CourseRow {
+  id: string;
+  name: string;
+  code: string;
+  batchCount: number;
+}
+export interface BatchListRow extends BatchRow {
+  courseId: string;
+  startsOn: string | null;
+  endsOn: string | null;
+}
+export interface BatchDetail {
+  id: string;
+  name: string;
+  courseId: string;
+  courseName: string;
+  startsOn: string | null;
+  endsOn: string | null;
+  capacity: number | null;
+  enrolled: number;
+  students: { studentId: string; name: string; rollNo: string; enrolledAt: string }[];
+}
