@@ -163,3 +163,56 @@ export interface MyAttendance {
   summary: { present: number; late: number; absent: number; excused: number; percentage: number | null };
   recent: { date: string; status: AttendanceStatus; batchName: string }[];
 }
+
+export interface QuestionRow {
+  id: string;
+  subject: string;
+  topic: string | null;
+  type: "single_choice" | "multi_choice" | "numeric";
+  body: string;
+  options: { id: string; text: string }[] | null;
+  correct: string[];
+  marks: number;
+  negativeMarks: number;
+  createdAt: string;
+}
+export interface ExamListRow {
+  id: string;
+  title: string;
+  status: string;
+  batchId: string | null;
+  durationMinutes: number;
+  startsAt: string | null;
+  endsAt: string | null;
+  createdAt: string;
+  questionCount: number;
+  attempts: number;
+}
+export interface ExamDetail {
+  id: string;
+  title: string;
+  status: string;
+  batchId: string | null;
+  durationMinutes: number;
+  startsAt: string | null;
+  endsAt: string | null;
+  shuffle: boolean;
+  questions: (Omit<QuestionRow, "createdAt"> & { position: number })[];
+}
+export interface ExamResults {
+  exam: { id: string; title: string; status: string };
+  maxScore: number;
+  attempted: number;
+  results: {
+    sessionId: string;
+    studentId: string;
+    name: string;
+    rollNo: string;
+    status: string;
+    score: number | null;
+    startedAt: string;
+    submittedAt: string | null;
+    lateAnswers: number;
+    rank: number | null;
+  }[];
+}

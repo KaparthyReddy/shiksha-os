@@ -87,6 +87,13 @@ export async function questionBankRoutes(app: FastifyInstance) {
     });
   });
 
+  app.get("/questions/:id", { preHandler: staff }, async (req) => {
+    const { id } = idParams.parse(req.params);
+    const [q] = await inTenant(req, (tx) => tx.select().from(questions).where(eq(questions.id, id)).limit(1));
+    if (!q) throw notFound("Question not found");
+    return q;
+  });
+
   app.delete("/questions/:id", { preHandler: staff }, async (req) => {
     const { id } = idParams.parse(req.params);
     const { tenantId, userId } = req.auth!;

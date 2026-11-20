@@ -60,7 +60,7 @@ check "the search proxy returns matches" "$(curl -s -b "$JT" "$WEB/api/staff/que
 echo "--- exams ---"
 check "exam list shows the exam" "$(has "$JT" /staff/exams "Staff Smoke $S")" yes
 check "the exam builder renders" "$(has "$JT" /staff/exams/new 'Duration (minutes)')" yes
-check "exam detail shows the answer key" "$(has "$JT" "/staff/exams/$EXAM" 'Answer key')" yes
+check "exam detail shows the answer key" "$(has "$JT" "/staff/exams/$EXAM" 'answer key')" yes
 check "a published exam offers Close" "$(has "$JT" "/staff/exams/$EXAM" 'Close exam')" yes
 check "an unknown exam is a 404" "$(code -b "$JT" "$WEB/staff/exams/00000000-0000-4000-8000-000000000000")" 404
 

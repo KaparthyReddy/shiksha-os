@@ -80,6 +80,7 @@ export async function middleware(req: NextRequest) {
   if (pathname.startsWith("/teacher") && role === "student") return redirect(HOME[role]);
   if (pathname.startsWith("/student") && role !== "student") return redirect(HOME[role]);
   if ((pathname === "/exam" || pathname.startsWith("/exam/")) && role !== "student") return redirect(HOME[role]);
+  if (pathname.startsWith("/staff") && role === "student") return redirect(HOME[role]);
 
   // Server components and route handlers read cookies from the incoming request, so hand them the refreshed ones.
   const headers = new Headers(req.headers);
