@@ -212,7 +212,9 @@ export async function feeRoutes(app: FastifyInstance) {
       const paid = await paidSoFar(tx, id);
       const outstanding = inv.amountPaise - paid;
       if (body.amountPaise > outstanding) {
-        throw conflict(`Payment exceeds the outstanding balance (${outstanding} paise)`);
+        throw conflict(
+          `Payment exceeds the outstanding balance (₹${(outstanding / 100).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 2 })})`,
+        );
       }
 
       // Receipt numbers are sequential per tenant; the advisory lock keeps them gap-free under concurrency.
