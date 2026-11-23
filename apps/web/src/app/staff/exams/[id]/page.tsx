@@ -6,7 +6,7 @@ import { Badge, Card } from "@/components/ui";
 import { ApiError, api } from "@/lib/api";
 import { fmtDateTime } from "@/lib/date";
 import type { BatchRow, ExamDetail } from "@/lib/types";
-import { closeExamAction, deleteExamAction, publishExamAction } from "../../actions";
+import { closeExamAction, deleteExamAction, publishExamAction, releaseResultsAction } from "../../actions";
 
 const tone = { draft: "slate", published: "green", closed: "amber" } as const;
 const TYPE = { single_choice: "Single correct", multi_choice: "Multiple correct", numeric: "Numeric" } as const;
@@ -50,6 +50,17 @@ export default async function ExamPage({ params }: { params: Promise<{ id: strin
           hint={exam.startsAt || exam.endsAt ? `${fmtDateTime(exam.startsAt)} to ${fmtDateTime(exam.endsAt)}` : undefined}
         />
       </section>
+
+      {!exam.resultsReleased && (
+        <Card title="Results are hidden from students">
+          <p className="mb-3 text-sm text-slate-600">
+            Students who submit see a confirmation but no score, and the exam stays out of their report cards, until you release it.
+          </p>
+          <ActionForm action={releaseResultsAction} submitLabel="Release results" inline confirm="Release the results to students? They will see their scores right away.">
+            <input type="hidden" name="id" value={exam.id} />
+          </ActionForm>
+        </Card>
+      )}
 
       <Card title="Control">
         <div className="flex flex-wrap items-center gap-3">

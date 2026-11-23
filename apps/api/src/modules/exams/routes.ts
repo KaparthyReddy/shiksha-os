@@ -36,6 +36,7 @@ export async function examRoutes(app: FastifyInstance) {
           startsAt: body.startsAt ? new Date(body.startsAt) : undefined,
           endsAt: body.endsAt ? new Date(body.endsAt) : undefined,
           shuffle: body.shuffle,
+          resultsReleased: body.releaseResults,
           createdBy: userId,
         })
         .returning();

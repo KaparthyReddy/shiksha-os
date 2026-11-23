@@ -18,6 +18,9 @@ export default async function StudentHome() {
 
   return (
     <div className="space-y-8">
+      <div>
+        <a href="/api/report-card" className="inline-block rounded-lg border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100">Download my report card (PDF)</a>
+      </div>
       <section>
         <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-500">My exams</h2>
         <div className="divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white">

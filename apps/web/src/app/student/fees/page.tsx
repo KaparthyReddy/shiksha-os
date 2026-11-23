@@ -34,7 +34,7 @@ export default async function StudentFees() {
                   <span>
                     {p.receiptNo} <span className="text-slate-500">· {p.receivedAt.slice(0, 10)} · {p.method.replace(/_/g, " ")}</span>
                   </span>
-                  <span>{inr(p.amountPaise)}</span>
+                  <span>{inr(p.amountPaise)} <a href={`/api/receipt/${p.receiptNo}`} className="ml-3 text-indigo-600 hover:underline">PDF</a></span>
                 </div>
               ))}
             </div>

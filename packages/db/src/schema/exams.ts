@@ -44,6 +44,7 @@ export const exams = pgTable("exams", {
   endsAt: timestamp("ends_at", { withTimezone: true }),
   status: examStatusEnum("status").notNull().default("draft"),
   shuffle: boolean("shuffle").notNull().default(true),
+  resultsReleased: boolean("results_released").notNull().default(true),
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: createdAt(),
 });

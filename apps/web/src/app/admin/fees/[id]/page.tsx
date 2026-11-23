@@ -109,7 +109,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         </Card>
       </div>
 
-      <Table head={["Receipt", "Date", "Method", "Reference", "Amount"]}>
+      <Table head={["Receipt", "Date", "Method", "Reference", "Amount", ""]}>
         {inv.payments.length === 0 && (
           <tr>
             <td colSpan={5} className="px-4 py-6 text-slate-500">
@@ -124,6 +124,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             <td className="px-4 py-3">{p.method.replace(/_/g, " ")}</td>
             <td className="px-4 py-3 text-slate-600">{p.reference ?? "—"}</td>
             <td className="px-4 py-3">{inr(p.amountPaise)}</td>
+            <td className="px-4 py-3 text-right"><a href={`/api/receipt/${p.receiptNo}`} className="text-indigo-600 hover:underline">Receipt PDF</a></td>
           </tr>
         ))}
       </Table>

@@ -19,3 +19,9 @@ export const TEACHER_NAV: NavItem[] = [
   { label: "Attendance", href: "/teacher/attendance" },
   { label: "Live classes" },
 ];
+
+export const STUDENT_NAV: NavItem[] = [
+  { label: "Home", href: "/student" },
+  { label: "Attendance", href: "/student/attendance" },
+  { label: "Fees", href: "/student/fees" },
+];

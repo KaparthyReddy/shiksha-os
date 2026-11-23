@@ -54,6 +54,7 @@ export const createExamSchema = z
     startsAt: isoDateTime.optional(),
     endsAt: isoDateTime.optional(),
     shuffle: z.boolean().default(true),
+    releaseResults: z.boolean().default(true),
     questionIds: z.array(uuid).min(1).max(300).refine(unique, "Duplicate questions"),
   })
   .refine((e) => !e.startsAt || !e.endsAt || new Date(e.startsAt) < new Date(e.endsAt), {

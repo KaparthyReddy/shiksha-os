@@ -62,6 +62,8 @@ export async function middleware(req: NextRequest) {
     return apply(NextResponse.next());
   }
 
+  if (pathname === "/forgot-password" || pathname === "/reset-password") return apply(NextResponse.next());
+
   if (!loggedIn) {
     if (pathname.startsWith("/api/")) {
       // Fetch callers get JSON, not an HTML redirect. 503 means "try again", 401 means "sign in".

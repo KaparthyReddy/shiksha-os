@@ -197,6 +197,7 @@ export interface ExamDetail {
   startsAt: string | null;
   endsAt: string | null;
   shuffle: boolean;
+  resultsReleased: boolean;
   questions: (Omit<QuestionRow, "createdAt"> & { position: number })[];
 }
 export interface ExamResults {

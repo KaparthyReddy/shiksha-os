@@ -33,6 +33,7 @@ export async function sessionRoutes(app: FastifyInstance) {
           startsAt: exams.startsAt,
           endsAt: exams.endsAt,
           examStatus: exams.status,
+          released: exams.resultsReleased,
           sessionId: examSessions.id,
           sessionStatus: examSessions.status,
           deadlineAt: examSessions.deadlineAt,
@@ -72,7 +73,7 @@ export async function sessionRoutes(app: FastifyInstance) {
           endsAt: r.endsAt,
           state,
           sessionId: r.sessionId,
-          score: r.sessionStatus && r.sessionStatus !== "in_progress" ? r.score : null,
+          score: r.released && r.sessionStatus && r.sessionStatus !== "in_progress" ? r.score : null,
         };
       });
     });
@@ -319,8 +320,17 @@ export async function sessionRoutes(app: FastifyInstance) {
       } else {
         result = await gradeSession(tx, session);
       }
+      const [ex] = await tx
+        .select({ released: exams.resultsReleased })
+        .from(exams)
+        .where(eq(exams.id, session.examId))
+        .limit(1);
+      if (ex && !ex.released) {
+        return { status, released: false, total: null, maxScore: null, correct: null, wrong: null, unanswered: null };
+      }
       return {
         status,
+        released: true,
         total: result.total,
         maxScore: result.maxScore,
         correct: result.correct,

@@ -84,3 +84,11 @@ export async function revokeRefreshFamily(db: Db, raw: string, now = Date.now())
       .where(and(eq(refreshTokens.familyId, row.familyId), isNull(refreshTokens.revokedAt)));
   });
 }
+
+/** Kills every refresh token a user holds, so every signed-in device must sign in again. */
+export async function revokeAllRefreshTokens(tx: Tx, userId: string, now = Date.now()): Promise<void> {
+  await tx
+    .update(refreshTokens)
+    .set({ revokedAt: new Date(now) })
+    .where(and(eq(refreshTokens.userId, userId), isNull(refreshTokens.revokedAt)));
+}

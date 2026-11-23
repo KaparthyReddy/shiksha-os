@@ -18,6 +18,10 @@ import { attendanceRoutes } from "./modules/attendance/routes";
 import { feeRoutes } from "./modules/fees/routes";
 import { importRoutes } from "./modules/imports/routes";
 import { teacherAssignmentRoutes } from "./modules/academics/teachers";
+import { accountRoutes } from "./modules/auth/account";
+import { reportRoutes } from "./modules/reports/routes";
+import { receiptRoutes } from "./modules/fees/receipts";
+import { releaseRoutes } from "./modules/exams/release";
 
 export async function buildApp() {
   const app = Fastify({
@@ -50,7 +54,7 @@ export async function buildApp() {
       if (error.statusCode && error.statusCode < 500) {
         return reply
           .status(error.statusCode)
-          .send({ error: { code: error.code ?? "bad_request", message: error.message } });
+          .send({ error: { code: error.statusCode === 429 ? "rate_limited" : (error.code ?? "bad_request"), message: error.message } });
       }
       req.log.error(error);
       return reply.status(500).send({ error: { code: "internal", message: "Something went wrong" } });
@@ -75,6 +79,10 @@ export async function buildApp() {
   await app.register(feeRoutes);
   await app.register(importRoutes);
   await app.register(teacherAssignmentRoutes);
+  await app.register(accountRoutes);
+  await app.register(reportRoutes);
+  await app.register(receiptRoutes);
+  await app.register(releaseRoutes);
 
   return app;
 }

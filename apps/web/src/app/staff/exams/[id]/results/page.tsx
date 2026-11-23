@@ -47,10 +47,10 @@ export default async function ResultsPage({ params }: { params: Promise<{ id: st
         <Stat label="Lowest" value={scores.length ? String(Math.min(...scores)) : "—"} />
       </section>
 
-      <Table head={["Rank", "Student", "Roll no.", "Status", "Score", "%", "Late sync", "Submitted"]}>
+      <Table head={["Rank", "Student", "Roll no.", "Status", "Score", "%", "Late sync", "Submitted", ""]}>
         {data.results.length === 0 && (
           <tr>
-            <td colSpan={8} className="px-4 py-6 text-slate-500">
+            <td colSpan={9} className="px-4 py-6 text-slate-500">
               Nobody has attempted this exam yet.
             </td>
           </tr>
@@ -67,6 +67,7 @@ export default async function ResultsPage({ params }: { params: Promise<{ id: st
             <td className="px-4 py-3">{r.score === null ? "—" : pct(r.score)}</td>
             <td className="px-4 py-3">{r.lateAnswers > 0 ? <Badge tone="amber">{r.lateAnswers} late</Badge> : "—"}</td>
             <td className="px-4 py-3 text-xs text-slate-600">{fmtDateTime(r.submittedAt)}</td>
+            <td className="px-4 py-3 text-right text-xs"><a href={`/api/report-card?studentId=${r.studentId}`} target="_blank" className="text-indigo-600 hover:underline">Report card</a></td>
           </tr>
         ))}
       </Table>

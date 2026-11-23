@@ -57,6 +57,7 @@ export default function LoginForm() {
         <input className={input} type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
       </label>
       {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+      <div className="text-right text-sm"><a href="/forgot-password" className="text-indigo-600 hover:underline">Forgot password?</a></div>
       <button
         type="submit"
         disabled={busy}

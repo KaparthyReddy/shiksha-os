@@ -96,6 +96,18 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
             )}
           </Card>
 
+          <Card title="Report card">
+            <form action="/api/report-card" method="get" target="_blank" className="space-y-3">
+              <input type="hidden" name="studentId" value={student.id} />
+              <label className="block text-sm font-medium">
+                Teacher&apos;s remark (optional)
+                <textarea name="remark" maxLength={300} rows={3} className={inputClass} />
+              </label>
+              <button className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">Download PDF</button>
+            </form>
+            <p className="mt-2 text-xs text-slate-500">Includes released exam results, subject-wise marks and attendance.</p>
+          </Card>
+
           <Card title="Account">
             <p className="mb-3 text-sm text-slate-600">
               Deactivating blocks sign-in and token refresh straight away. An access token already issued keeps working

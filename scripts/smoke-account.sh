@@ -49,7 +49,10 @@ check "the old password no longer signs in" "$(login "$EMAIL" "$TP" | json 'd.er
 check "the new password signs in" "$(login "$EMAIL" "NewPass-$S-1" | json 'Boolean(d.accessToken)')" true
 
 echo "--- forgot password ---"
-check "forgot-password answers ok for a real account" "$(pub /auth/forgot-password "{\"tenant\":\"demo-academy\",\"email\":\"$EMAIL\"}" | json 'd.ok')" true
+FR=$(pub /auth/forgot-password "{\"tenant\":\"demo-academy\",\"email\":\"$EMAIL\"}")
+echo "  debug: forgot raw -> $FR"
+echo "  debug: reset rows for $EMAIL: $(sql "select count(*) from password_resets pr join users u on u.id=pr.user_id where u.email='$EMAIL'")"
+check "forgot-password answers ok for a real account" "$(echo "$FR" | json 'd.ok')" true
 check "...and identically for an unknown email" "$(pub /auth/forgot-password "{\"tenant\":\"demo-academy\",\"email\":\"nobody$S@demo.test\"}" | json 'd.ok')" true
 check "...and for an unknown institute" "$(pub /auth/forgot-password "{\"tenant\":\"no-such-institute\",\"email\":\"$EMAIL\"}" | json 'd.ok')" true
 check "a malformed request is rejected" "$(pub /auth/forgot-password '{"tenant":"demo-academy","email":"not-an-email"}' | json 'd.error.code')" validation_error

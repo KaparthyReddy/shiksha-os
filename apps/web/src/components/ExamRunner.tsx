@@ -391,6 +391,20 @@ export default function ExamRunner({ examId }: { examId: string }) {
     );
   }
 
+  if (phase === "done" && result && result.released === false) {
+    return (
+      <main className="flex min-h-screen items-center justify-center p-6">
+        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+          <h1 className="text-xl font-semibold">{result.status === "expired" ? "Time's up" : "Exam submitted"}</h1>
+          <p className="mt-1 text-sm text-slate-500">{payload?.session.title}</p>
+          <p className="mt-6 text-slate-600">Your answers are saved. Your teacher will release the results later.</p>
+          <Link href="/student" className="mt-8 inline-block rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+            Back to dashboard
+          </Link>
+        </div>
+      </main>
+    );
+  }
   if (phase === "done" && result) {
     return (
       <main className="flex min-h-screen items-center justify-center p-6">

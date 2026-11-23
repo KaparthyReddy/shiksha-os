@@ -114,6 +114,7 @@ export async function createExamAction(_: FormState, fd: FormData): Promise<Form
     startsAt: startsAt ?? undefined,
     endsAt: endsAt ?? undefined,
     shuffle: field(fd, "shuffle") === "on",
+    releaseResults: field(fd, "hideResults") !== "on",
   });
   if (!r.ok) return fail(r);
   revalidatePath("/staff/exams");
@@ -147,4 +148,14 @@ export async function deleteExamAction(_: FormState, fd: FormData): Promise<Form
   if (!r.ok) return fail(r);
   revalidatePath("/staff/exams");
   redirect("/staff/exams");
+}
+
+export async function releaseResultsAction(_: FormState, fd: FormData): Promise<FormState> {
+  const id = uuid(fd, "id");
+  if (!id) return problem("Exam is missing. Reload the page and try again.");
+  const r = await apiSend("POST", `/exams/${id}/release-results`);
+  if (!r.ok) return fail(r);
+  revalidatePath(`/staff/exams/${id}`);
+  revalidatePath(`/staff/exams/${id}/results`);
+  return success("Results released. Students can see their scores now.");
 }

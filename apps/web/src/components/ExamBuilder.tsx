@@ -127,6 +127,10 @@ export default function ExamBuilder({
             <input type="checkbox" name="shuffle" defaultChecked className="h-4 w-4 accent-indigo-600" />
             Shuffle question and option order for each student
           </label>
+          <label className="flex items-center gap-2 text-sm sm:col-span-2">
+            <input type="checkbox" name="hideResults" className="h-4 w-4 accent-indigo-600" />
+            Hide results from students until I release them
+          </label>
           <p className="text-xs text-slate-500 sm:col-span-2">
             Times are in {timezone}. Each student&apos;s clock starts when they begin, and never runs past the closing time.
           </p>

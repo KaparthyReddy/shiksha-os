@@ -44,7 +44,7 @@ export default async function Shell({
         <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3">
           <div className="font-medium">{tenant.name}</div>
           <div className="flex items-center gap-3 text-sm">
-            <span className="text-slate-500">{me.name}</span>
+            <Link href="/account" className="text-slate-600 hover:underline">{me.name}</Link>
             <LogoutButton />
           </div>
         </header>

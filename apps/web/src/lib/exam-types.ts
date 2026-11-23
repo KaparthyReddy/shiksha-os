@@ -46,9 +46,11 @@ export interface TimeResponse {
 
 export interface SubmitResult {
   status: "submitted" | "expired";
-  total: number;
-  maxScore: number;
-  correct: number;
-  wrong: number;
-  unanswered: number;
+  /** false while the teacher is holding results back; the score fields are then null. */
+  released?: boolean;
+  total: number | null;
+  maxScore: number | null;
+  correct: number | null;
+  wrong: number | null;
+  unanswered: number | null;
 }
