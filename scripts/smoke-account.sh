@@ -20,7 +20,8 @@ rq() { # token method path [body]
   if [ -n "${4:-}" ]; then curl -s -X "$2" "$API$3" -H "authorization: Bearer $1" -H 'content-type: application/json' -d "$4"
   else curl -s -X "$2" "$API$3" -H "authorization: Bearer $1"; fi
 }
-pub() { curl -s -X POST "$API$1" -H 'content-type: application/json' -d "$2"; }
+: > /tmp/pub.log
+pub() { local out; out=$(curl -s -D /tmp/pub.hdr -X POST "$API$1" -H 'content-type: application/json' -d "$2"); echo "$1 $(head -1 /tmp/pub.hdr | tr -d '\r') $(grep -i '^x-ratelimit-remaining' /tmp/pub.hdr | tr -d '\r')" >> /tmp/pub.log; printf '%s' "$out"; }
 mail_id() { curl -s "$MAILPIT/api/v1/messages?limit=200" | json "(d.messages.find(m=>m.To.some(t=>t.Address==='$EMAIL')&&m.Subject.includes('Reset'))||{}).ID"; }
 wait_mail() { local end=$((SECONDS + $1)) id; while [ "$SECONDS" -lt "$end" ]; do id=$(mail_id); if [ -n "$id" ] && [ "$id" != undefined ] && [ "$id" != PARSE-ERROR ]; then echo "$id"; return; fi; sleep 3; done; echo ""; }
 wait_sql() { local end=$((SECONDS + $1)); while [ "$SECONDS" -lt "$end" ]; do if [ "$(sql "$2")" = "$3" ]; then echo true; return; fi; sleep 2; done; echo false; }
