@@ -224,3 +224,46 @@ export interface BatchTeacher {
   email: string;
   designation: string | null;
 }
+
+export type LiveStatus = "scheduled" | "live" | "ended" | "cancelled";
+export interface LiveClassRow {
+  id: string;
+  title: string;
+  batchId: string;
+  batchName: string;
+  scheduledAt: string;
+  durationMinutes: number;
+  status: LiveStatus;
+  startedAt: string | null;
+  endedAt: string | null;
+  joined: number;
+}
+export interface LiveClassDetail {
+  id: string;
+  title: string;
+  batchId: string;
+  batchName: string;
+  scheduledAt: string;
+  durationMinutes: number;
+  status: LiveStatus;
+  startedAt: string | null;
+  endedAt: string | null;
+  roster: {
+    studentId: string;
+    name: string;
+    rollNo: string;
+    firstJoinedAt: string | null;
+    totalSeconds: number | null;
+    joinCount: number | null;
+  }[];
+  staffJoined: { name: string; firstJoinedAt: string; totalSeconds: number }[];
+}
+export interface MyLiveClass {
+  id: string;
+  title: string;
+  batchName: string;
+  scheduledAt: string;
+  durationMinutes: number;
+  status: LiveStatus;
+  attended: boolean;
+}

@@ -5,7 +5,7 @@ async function main() {
   const app = await buildApp();
   await app.listen({
     port: env.API_PORT,
-    host: env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1",
+    host: env.API_HOST ?? (env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1"),
   });
 
   const stop = async () => {

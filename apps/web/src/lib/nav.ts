@@ -17,11 +17,12 @@ export const TEACHER_NAV: NavItem[] = [
   { label: "Questions", href: "/staff/questions" },
   { label: "Exams", href: "/staff/exams" },
   { label: "Attendance", href: "/teacher/attendance" },
-  { label: "Live classes" },
+  { label: "Live classes", href: "/staff/live" },
 ];
 
 export const STUDENT_NAV: NavItem[] = [
   { label: "Home", href: "/student" },
   { label: "Attendance", href: "/student/attendance" },
   { label: "Fees", href: "/student/fees" },
+  { label: "Live classes", href: "/student/live" },
 ];

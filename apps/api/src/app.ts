@@ -22,6 +22,8 @@ import { accountRoutes } from "./modules/auth/account";
 import { reportRoutes } from "./modules/reports/routes";
 import { receiptRoutes } from "./modules/fees/receipts";
 import { releaseRoutes } from "./modules/exams/release";
+import { liveRoutes } from "./modules/live/routes";
+import { liveWebhookRoutes } from "./modules/live/webhook";
 
 export async function buildApp() {
   const app = Fastify({
@@ -83,6 +85,8 @@ export async function buildApp() {
   await app.register(reportRoutes);
   await app.register(receiptRoutes);
   await app.register(releaseRoutes);
+  await app.register(liveRoutes);
+  await app.register(liveWebhookRoutes);
 
   return app;
 }

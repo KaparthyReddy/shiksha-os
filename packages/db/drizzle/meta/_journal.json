@@ -43,6 +43,13 @@
       "when": 1795343527413,
       "tag": "0005_goofy_swordsman",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795760684731,
+      "tag": "0006_brown_bishop",
+      "breakpoints": true
     }
   ]
 }
